@@ -2,6 +2,8 @@
 name = "flush"
 version = "0.1.0"
 authors = ["Luis Rodrigues Soares <luis@luisonthekeyboard.com>"]
+description = "A Fluent Shell"
+license = "Apache-2.0"
 
 [dependencies]
 nix = "0.11.0"
