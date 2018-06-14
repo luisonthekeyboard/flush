@@ -1,3 +1,4 @@
+use std::ffi::CString;
 use std::io::{self, Write};
 
 fn main() {
@@ -15,7 +16,8 @@ fn rush_loop() {
         io::stdout().flush().unwrap();
 
         let line = rush_read_line();
-        println!("->{}", line);
+        io::stdout().write(line.as_bytes()).unwrap();
+        //        println!("->{}", line);
 
         // let args = rush_split_line(&line);
         //  println!("->{}", args);
@@ -26,10 +28,10 @@ fn rush_loop() {
 
 // }
 
-fn rush_read_line() -> String {
+fn rush_read_line() -> CString {
     let mut input = String::new();
     match io::stdin().read_line(&mut input) {
-        Ok(_) => return input,
-        Err(_) => return String::from("error"),
+        Ok(_) => return CString::new(input.as_bytes()).unwrap(),
+        Err(_) => return CString::new("error").unwrap(),
     }
 }
