@@ -1,7 +1,7 @@
 [package]
 name = "flush"
 version = "0.1.0"
-authors = ["Luis Rodrigues Soares"]
+authors = ["Luis Rodrigues Soares <luis@luisonthekeyboard.com>"]
 
 [dependencies]
 nix = "0.11.0"
