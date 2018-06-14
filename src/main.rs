@@ -1,16 +1,13 @@
+extern crate nix;
+
+use nix::sys::signal::Signal;
+use nix::sys::wait::{waitpid, WaitPidFlag, WaitStatus};
+use nix::unistd::execvp;
+use nix::unistd::{fork, ForkResult};
 use std::ffi::CString;
 use std::io::{self, Write};
 
 fn main() {
-    // Load config files, if any.
-
-    // Run command loop.
-    rush_loop();
-
-    // Perform any shutdown/cleanup.
-}
-
-fn rush_loop() {
     loop {
         let mut input = String::new();
         print!(">>>> ");
@@ -25,6 +22,30 @@ fn rush_loop() {
             String::from_utf8_lossy(args.0.as_bytes()),
             String::from_utf8_lossy(args.1.as_bytes())
         );
+
+        rush_execute(&args.0, args.1);
+    }
+}
+
+fn rush_execute(command: &CString, arguments: CString) {
+    match fork() {
+        Ok(ForkResult::Child) => {
+            println!("I'm a new child process");
+            let args_as_slice: &[CString] = &[arguments];
+            match execvp(command, args_as_slice) {
+                Ok(_) => (),
+                Err(e) => println!("{}", e),
+            }
+        }
+        Ok(ForkResult::Parent { child, .. }) => loop {
+            let result = waitpid(child, Some(WaitPidFlag::WUNTRACED));
+            if result == Ok(WaitStatus::Exited(child, 0))
+                || result == Ok(WaitStatus::Signaled(child, Signal::SIGKILL, false))
+            {
+                break;
+            }
+        },
+        Err(_) => println!("Fork failed"),
     }
 }
 
