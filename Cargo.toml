@@ -4,6 +4,12 @@ version = "0.1.0"
 authors = ["Luis Rodrigues Soares <luis@luisonthekeyboard.com>"]
 description = "A Fluent Shell"
 license = "Apache-2.0"
+repository = "https://github.com/luisonthekeyboard/flush"
+readme = "README.md"
+keywords = ["shell", "rust", "fluent", "ergonomics"]
+categories = ["command-line-interface", "command-line-utilities", "filesystem", "os", "os::unix-apis"]
+license-file = "LICENSE"
+
 
 [dependencies]
 nix = "0.11.0"
