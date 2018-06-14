@@ -1,4 +1,4 @@
-use std::io;
+use std::io::{self, Write};
 
 fn main() {
     // Load config files, if any.
@@ -10,15 +10,26 @@ fn main() {
 }
 
 fn rush_loop() {
-    let mut input = String::new();
-
     loop {
-        match io::stdin().read_line(&mut input) {
-            Ok(n) => {
-                println!("{} bytes read", n);
-                println!("{}", input);
-            }
-            Err(error) => println!("error: {}", error),
-        }
+        print!(">>>> ");
+        io::stdout().flush().unwrap();
+
+        let line = rush_read_line();
+        println!("->{}", line);
+
+        // let args = rush_split_line(&line);
+        //  println!("->{}", args);
+    }
+}
+
+// fn rush_split_line(line: &String) -> [String] {
+
+// }
+
+fn rush_read_line() -> String {
+    let mut input = String::new();
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => return input,
+        Err(_) => return String::from("error"),
     }
 }
