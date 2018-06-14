@@ -1,6 +1,5 @@
 extern crate nix;
 
-use nix::sys::signal::Signal;
 use nix::sys::wait::{waitpid, WaitPidFlag, WaitStatus};
 use nix::unistd::execvp;
 use nix::unistd::{fork, ForkResult};
@@ -30,7 +29,6 @@ fn main() {
 fn rush_execute(command: &CString, arguments: CString) {
     match fork() {
         Ok(ForkResult::Child) => {
-            println!("I'm a new child process");
             let args_as_slice: &[CString] = &[arguments];
             match execvp(command, args_as_slice) {
                 Ok(_) => (),
@@ -38,11 +36,11 @@ fn rush_execute(command: &CString, arguments: CString) {
             }
         }
         Ok(ForkResult::Parent { child, .. }) => loop {
-            let result = waitpid(child, Some(WaitPidFlag::WUNTRACED));
-            if result == Ok(WaitStatus::Exited(child, 0))
-                || result == Ok(WaitStatus::Signaled(child, Signal::SIGKILL, false))
-            {
-                break;
+            match waitpid(child, Some(WaitPidFlag::WUNTRACED)) {
+                Ok(WaitStatus::Exited(_, _)) => break,
+                Ok(WaitStatus::Signaled(_, _, _)) => break,
+                Err(_) => break,
+                _ => continue,
             }
         },
         Err(_) => println!("Fork failed"),
