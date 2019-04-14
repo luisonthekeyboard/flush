@@ -3,3 +3,5 @@
 **/*.rs.bk
 .projectile
 Cargo.lock
+.idea
+*.iml
