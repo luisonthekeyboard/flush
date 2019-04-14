@@ -22,11 +22,11 @@ fn main() {
             String::from_utf8_lossy(args.1.as_bytes())
         );
 
-        rush_execute(&args.0, args.1);
+        flush_execute(&args.0, args.1);
     }
 }
 
-fn rush_execute(command: &CString, arguments: CString) {
+fn flush_execute(command: &CString, arguments: CString) {
     match fork() {
         Ok(ForkResult::Child) => {
             let args_as_slice: &[CString] = &[arguments];
